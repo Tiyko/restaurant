@@ -33,6 +33,8 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = development
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 ALLOWED_HOSTS = ['localhost']
 
 # Application definition
@@ -130,7 +132,7 @@ USE_TZ = True
 
 MEDIA_URL = '/media/'
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
