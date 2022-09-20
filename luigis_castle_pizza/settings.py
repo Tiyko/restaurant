@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
+from django.contrib.messages import constants as messages
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,12 +36,13 @@ DEBUG = development
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-# ALLOWED_HOSTS = ['luigis-castle-pizza.herokuapp.com', 'localhost']
-
 if development:
     ALLOWED_HOSTS = ['localhost']
 else:
     ALLOWED_HOSTS = [config('HEROKU_HOSTNAME')]
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
+CSRF_COOKIE_DOMAIN = '127.0.0.1'
 
 # Application definition
 
@@ -51,8 +53,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_summernote',
     'restaurant',
 ]
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-info',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+    }
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
