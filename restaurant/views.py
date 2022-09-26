@@ -4,8 +4,17 @@ from django.http import HttpResponseRedirect
 from .models import Post
 from .forms import CommentForm
 
-# def restaurant(request):
-#     return render(request, '../templates/index.html')
+
+def restaurant(request):
+    return render(request, 'index.html')
+
+
+def menu(request):
+    return render(request, 'menu.html',)
+
+
+def about_us(request):
+    return render(request, 'about_us.html',)
 
 
 class PostList(generic.ListView):
