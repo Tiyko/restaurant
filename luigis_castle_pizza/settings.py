@@ -36,22 +36,7 @@ DEBUG = development
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-if development:
-    ALLOWED_HOSTS = ['localhost']
-    # CSRF_TRUSTED_ORIGINS = [
-    #     'http://127.0.0.1'
-    # ]
-    # CSRF_COOKIE_DOMAIN = [
-    #     '127.0.0.1'
-    # ]
-    # CSRF_COOKIE_SECURE = False
-    # SESSION_COOKIE_SECURE = False
-else:
-    ALLOWED_HOSTS = [config('HEROKU_HOSTNAME')]
-    # CSRF_TRUSTED_ORIGINS = [config('HEROKU_HOSTNAME')]
-    # CSRF_COOKIE_DOMAIN = [config('HEROKU_HOSTNAME')]
-    # CSRF_COOKIE_SECURE = False
-    # SESSION_COOKIE_SECURE = False
+ALLOWED_HOSTS = ['localhost', config('HEROKU_HOSTNAME')]
 
 # Application definition
 
@@ -62,13 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sites',
-    'cloudinary_storage',
-    'django.contrib.staticfiles',
-    'cloudinary',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
     'django_summernote',
+    'crispy_forms',
     'restaurant',
 ]
 
