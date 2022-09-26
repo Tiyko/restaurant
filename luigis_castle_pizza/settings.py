@@ -36,9 +36,7 @@ DEBUG = development
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-# ALLOWED_HOSTS = ['localhost', config('HEROKU_HOSTNAME')]
-ALLOWED_HOSTS = ['localhost']
-ALLOWED_HOSTS = [config('HEROKU_HOSTNAME')]
+ALLOWED_HOSTS = ['localhost', config('HEROKU_HOSTNAME')]
 
 # Application definition
 
