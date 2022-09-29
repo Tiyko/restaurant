@@ -1,11 +1,14 @@
 from django.urls import path
 from . import views
 
+# from restaurant.views import PostMenu
+
 
 urlpatterns = [
     path('', views.restaurant, name='index'),
-    path("menu/", views.menu, name="menu"),
     path("about_us/", views.about_us, name="about_us"),
+
+    path('menu/', views.ViewMenu.as_view(), name='menu'),
 
     path('', views.PostList.as_view(), name='index'),
     path('<slug:slug>/', views.PostDetail.as_view(), name='post_detail'),
