@@ -66,9 +66,17 @@ class Address(models.Model):
         verbose_name_plural = 'Addresses'
 
 
+class Customer(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
 class Orders(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     username = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     total_price = models.FloatField()
     created_on = models.DateTimeField(auto_now_add=True)
 
