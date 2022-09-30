@@ -9,6 +9,7 @@ urlpatterns = [
     path("about_us/", views.about_us, name="about_us"),
 
     path('menu/', views.ViewMenu.as_view(), name='menu'),
+    path('order_and_reservation/', views.ViewOrderAndReservation.as_view(), name='order_and_reservation'),
 
     path('', views.PostList.as_view(), name='index'),
     path('<slug:slug>/', views.PostDetail.as_view(), name='post_detail'),

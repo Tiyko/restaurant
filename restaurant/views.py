@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect
-from .models import Post, Menu, Items
+from .models import Post, Menu, Items, Reservation
 from .forms import CommentForm
 
 
@@ -23,6 +23,18 @@ class ViewMenu(View):
             'order_items': self.item_model.objects.all(),
         }
         return render(request, "menu.html", context)
+
+
+class ViewOrderAndReservation(View):
+    order_model = Items
+    reservation_model = Reservation
+
+    def get(self, request):
+        context = {
+            'orders_items': self.order_model.objects.all(),
+            'reservations_items': self.reservation_model.objects.all(),
+        }
+        return render(request, "order_and_reservation.html", context)
 
 
 def about_us(request):

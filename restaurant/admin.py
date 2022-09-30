@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
-from .models import Post, Comment, Reservation, Address, Orders, Menu, Items
+from .models import Post, Comment, Reservation, Address, Orders, Menu, Items, Customer
 
 
 @admin.register(Post)
@@ -39,6 +39,17 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = ['id', 'username', 'address', 'zipcode', 'created_on']
     search_fields = ['username', 'id']
     list_filter = ['created_on']
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+
+    list_display = ['id', 'user', 'customer_address']
+    search_fields = ['user', 'id']
+    list_filter = ['created_on']
+
+    def customer_address(self, obj):
+        return obj.address.address
 
 
 @admin.register(Orders)
