@@ -2,6 +2,14 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
+<ul>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'account_email' %}">Change Email</a>
+    </li>
+</ul>
+{% endif %}
+
 <h1>Orders and Reservations</h1>
 
 <h2>Orders</h2>
