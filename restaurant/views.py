@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect, HttpResponse
@@ -76,7 +75,8 @@ class ReservationView(View):
                         'email': user_instance.email,
                     }
             return render(request, "book_reservation.html", context)
-        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        else:
+            return render(request, "account/login.html")
 
     def post(self, request):
         try:
