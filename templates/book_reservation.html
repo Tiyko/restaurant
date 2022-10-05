@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>BOOK A RESERVATION</h1>
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <label for="first_name">First name: </label>
+    <input id="first_name" type="text" name="first_name" value="{{first_name}}" maxlength="100" readonly="readonly">
+    <label for="last_name">Last name: </label>
+    <input id="last_name" type="text" name="last_name" value="{{last_name}}" maxlength="100" readonly="readonly">
+    <label for="email">Email: </label>
+    <input id="email" type="text" name="email" value="{{email}}" maxlength="100" readonly="readonly">
+
+    <label for="time">Time: </label>
+    <input id="time" type="time" name="time" maxlength="100" required>
+    <label for="date">Date: </label>
+    <input id="date" type="date" name="date" maxlength="100" required>
+    <label for="number_of_people">Number of People: </label>
+    <input id="number_of_people" type="number" name="number_of_people" maxlength="5"  required>
+
+    <input type="submit" value="Submit Reservation">
+</form>
+
+{%endblock%}

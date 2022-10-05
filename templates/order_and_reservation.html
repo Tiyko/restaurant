@@ -5,6 +5,7 @@
 <h1>Orders and Reservations</h1>
 
 <h2>Orders</h2>
+{% if user.is_authenticated %}
 {% for orders_item in orders_items %}
 <li>{{ orders_item.order.created_on }}</li>
 <li>{{ orders_item.order.customer.user.username }}</li>
@@ -23,10 +24,12 @@
 {% for reservation_item in reservations_items %}
 <li>{{ reservation_item.username.first_name }} {{ reservation_item.username.last_name }}</li>
 <li>{{ reservation_item.reservation_date }}</li>
+<li>{{ reservation_item.reservation_time }}</li>
 <li>{{ reservation_item.username.email }}</li>
 <button>Add</button>
 <button>Delete</button>
 <hr>
 {% endfor %}
+{% endif %}
 
 {%endblock%}

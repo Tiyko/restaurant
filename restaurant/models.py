@@ -50,7 +50,9 @@ class Comment(models.Model):
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     username = models.ForeignKey(User, on_delete=models.CASCADE)
-    reservation_date = models.DateTimeField(default=datetime.now, blank=True)
+    reservation_time = models.TimeField(default=datetime.now, blank=True)
+    reservation_date = models.DateField(default=datetime.now, blank=True)
+    number_of_people = models.PositiveIntegerField(default=1)
     created_on = models.DateTimeField(auto_now_add=True)
 
 

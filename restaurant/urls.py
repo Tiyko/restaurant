@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('menu/', views.ViewMenu.as_view(), name='menu'),
     path('order_and_reservation/', views.ViewOrderAndReservation.as_view(), name='order_and_reservation'),
+    path('book_reservation/', views.ReservationView.as_view(), name='book_reservation'),
 
     path('', views.PostList.as_view(), name='index'),
     path('<slug:slug>/', views.PostDetail.as_view(), name='post_detail'),

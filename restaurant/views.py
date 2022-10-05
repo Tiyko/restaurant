@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
-from django.http import HttpResponseRedirect
-from .models import Post, Menu, Items, Reservation
-from .forms import CommentForm
+from django.http import HttpResponseRedirect, HttpResponse
+from .models import Post, Menu, Items, Reservation, User
+from .forms import CommentForm, ReservationForm
 
 
 def restaurant(request):
@@ -11,6 +12,9 @@ def restaurant(request):
 
 # def menu(request):
 #     return render(request, 'menu.html')
+
+def about_us(request):
+    return render(request, 'about_us.html')
 
 
 class ViewMenu(View):
@@ -37,9 +41,49 @@ class ViewOrderAndReservation(View):
         return render(request, "order_and_reservation.html", context)
 
 
-def about_us(request):
-    return render(request, 'about_us.html')
+class ReservationView(View):
 
+    def get_user(self, request):
+        if request.user.is_authenticated:  
+            user_instance = User.objects.get(id=request.user.id)
+            return user_instance
+        else:
+            return None
+
+    def save_reservation(self, request):
+        try:
+            object_reservation_form = ReservationForm(data=request.POST)
+            form_info = object_reservation_form.data.dict()
+    
+            user_instance = self.get_user(request)
+
+            reservation_instance = Reservation(
+                username=user_instance,
+                number_of_people=form_info.get("number_of_people"),
+                reservation_date=form_info.get("date"),
+                reservation_time=form_info.get("time"))
+            reservation_instance.save()
+
+        except Exception as error:
+            print('Caught this error: ' + repr(error))
+
+    def get(self, request):
+        user_instance = self.get_user(request)
+        if user_instance is not None:
+            context = {
+                        'first_name': user_instance.first_name,
+                        'last_name': user_instance.last_name,
+                        'email': user_instance.email,
+                    }
+            return render(request, "book_reservation.html", context)
+        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+
+    def post(self, request):
+        try:
+            self.save_reservation(request)
+            return HttpResponse('thanks')
+        except Exception as error:
+            print('Caught this error: ' + repr(error))
 
 class PostList(generic.ListView):
     model = Post

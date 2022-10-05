@@ -28,7 +28,7 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
 
-    list_display = ['id', 'username', 'reservation_date', 'created_on']
+    list_display = ['id', 'username', 'reservation_date', 'reservation_time', 'number_of_people', 'created_on']
     search_fields = ['username', 'id']
     list_filter = ['created_on']
 
