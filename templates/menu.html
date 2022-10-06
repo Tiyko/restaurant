@@ -5,11 +5,16 @@
 <h1>MENU</h1>
 
 {% for menu_item in menu_items %}
-<img src=" {{ menu_item.imageUrl.url }}" width="20%">
-<li>{{ menu_item.meal_name }}</li>
-<li>{{ menu_item.meal_description }}</li>
-<button>{{ menu_item.price }}</button>
-<hr>
-{% endfor %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <img src=" {{ menu_item.imageUrl.url }}" width="20%">
+    <li>{{ menu_item.meal_name }}</li>
+    <li>{{ menu_item.meal_description }}</li>
 
+    <button><span>{{ menu_item.price }}</span> EUR</button>
+</form>
+<hr>
+
+{% endfor %}
+<span></span>
 {%endblock%}

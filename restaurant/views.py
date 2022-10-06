@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Post, Menu, Items, Reservation, User
+from .models import Post, Menu, Items, Reservation, User, Orders, Customer, Address
 from .forms import CommentForm, ReservationForm
 
 
@@ -19,6 +19,64 @@ def about_us(request):
 class ViewMenu(View):
     model = Menu
     item_model = Items
+
+    def get_user(self, request):
+        if request.user.is_authenticated:  
+            user_instance = User.objects.get(id=request.user.id)
+            return user_instance
+        else:
+            return None
+
+    def items_object_example(self):
+        user_instance = User(
+        
+            first_name='sas',
+            last_name='dsa',
+            email='asd@sd.ocm',
+            username='dffff',
+            is_superuser=True)
+        
+        address_instance = Address(
+            username=user_instance,
+            address='sadas',
+            zipcode='sdasdasdas'
+        )
+        
+        customer_instance = Customer(
+            user=user_instance,
+            address=address_instance
+        )
+        
+        menu_instance = Menu(
+            meal_name='pizza',
+            meal_description='pissssz',
+            price=33
+        )
+        
+        order_instance = Orders(
+            total_price='23333',
+            customer=customer_instance
+        )
+        
+        items_instance = Items( 
+            price='23',
+            id_menu=menu_instance,
+            order=order_instance,
+            quantity=55
+        )
+        
+        user_instance.save()
+        address_instance.save()
+        customer_instance.save()
+        order_instance.save()
+        menu_instance.save()
+        items_instance.save()
+        
+        return items_instance
+
+    def post(self, request):
+
+        return render(request, "menu.html", {"blah": "it_worked"})
 
     def get(self, request):
         context = {
