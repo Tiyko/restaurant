@@ -55,8 +55,8 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(Orders)
 class OrdersAdmin(admin.ModelAdmin):
 
-    list_display = ['id', 'username', 'total_price', 'created_on']
-    search_fields = ['username', 'id']
+    list_display = ['id', 'customer', 'total_price', 'created_on']
+    search_fields = ['customer', 'id']
     list_filter = ['created_on']
 
 

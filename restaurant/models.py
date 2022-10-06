@@ -77,7 +77,6 @@ class Customer(models.Model):
 
 class Orders(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
-    username = models.ForeignKey(User, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     total_price = models.FloatField()
     created_on = models.DateTimeField(auto_now_add=True)
