@@ -4,17 +4,17 @@
 
 <h1>MENU</h1>
 
-{% for menu_item in menu_items %}
+{%for menu_item in menu_items%}
 <form action="" method="POST">
     {% csrf_token %}
     <img src=" {{ menu_item.imageUrl.url }}" width="20%">
-    <li>{{ menu_item.meal_name }}</li>
-    <li>{{ menu_item.meal_description }}</li>
+    <li>{{menu_item.meal_name}}</li>
+    <li>{{menu_item.meal_description}}</li>
+    <input id="quantity" type="number" value="" name="quantity">
 
-    <button><span>{{ menu_item.price }}</span> EUR</button>
+    <button action="put" id={{menu_item.id}}><span>{{ menu_item.price }}</span> EUR</button>
 </form>
 <hr>
 
-{% endfor %}
-<span></span>
+{%endfor%}
 {%endblock%}

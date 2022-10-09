@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Post, Menu, Items, Reservation, User, Orders, Customer, Address
-from .forms import CommentForm, ReservationForm
+from .forms import CommentForm, ReservationForm, ItemsForm
 
 
 def restaurant(request):
@@ -27,56 +27,60 @@ class ViewMenu(View):
         else:
             return None
 
-    def items_object_example(self):
-        user_instance = User(
-        
-            first_name='sas',
-            last_name='dsa',
-            email='asd@sd.ocm',
-            username='dffff',
-            is_superuser=True)
-        
-        address_instance = Address(
-            username=user_instance,
-            address='sadas',
-            zipcode='sdasdasdas'
-        )
-        
+    def get_address(self, user_instance_id):         
+        try:
+            address_instance = Address.objects.get(username_id=user_instance_id)
+            return address_instance            
+        except Exception as error:
+            print('Caught this error: ' + repr(error))
+
+    def get_customer(self, user_instance_id):
+        try:
+            customer_instance = Customer.objects.get(user_id=user_instance_id)
+            return customer_instance
+
+        except Exception as error:    
+            print('Caught this error: ' + repr(error))
+
+    def create_customer(self, user_instance, address_instance):
         customer_instance = Customer(
             user=user_instance,
             address=address_instance
         )
-        
-        menu_instance = Menu(
-            meal_name='pizza',
-            meal_description='pissssz',
-            price=33
-        )
-        
-        order_instance = Orders(
-            total_price='23333',
-            customer=customer_instance
-        )
-        
-        items_instance = Items( 
-            price='23',
-            id_menu=menu_instance,
-            order=order_instance,
-            quantity=55
-        )
-        
-        user_instance.save()
-        address_instance.save()
-        customer_instance.save()
-        order_instance.save()
-        menu_instance.save()
-        items_instance.save()
-        
-        return items_instance
+        return customer_instance
+# Under Construction
 
+    def get_menu(self, menu_instance):
+        try:
+            menu_instance = Items.objects.get(id_menu_id)
+            return menu_instance
+        except Exception as error:
+            print('Caught this error: ' + repr(error))
+
+    # def get_items(self, get_items, user_instance_id):
+    #     items_instance = Items.objects.get(id=user_instance_id)
+    #     return items_instance
+
+# UC
     def post(self, request):
+        user_instance = self.get_user(request)
+        address_instance = self.get_address(user_instance.id)
+        customer_instance = self.get_customer(user_instance.id)
+        if customer_instance is None:
+            customer_instance = self.create_customer(user_instance, address_instance)
+            customer_instance.save()
+# UC
+        el = 345
+        # items_instance = self.get_items(user_instance.id)
+        menu_instance = self.get_menu(user_instance.id)
 
-        return render(request, "menu.html", {"blah": "it_worked"})
+        ela = 3
+# UC
+        # Should get the id from the selected menu item (menu.id), considering the request.POST object as the information's owner from the html form, with this id should get from database using the menu model and instatiate a Menu object to put it into in items after.
+
+# Under Construction
+
+        return HttpResponseRedirect('/order_and_reservation') 
 
     def get(self, request):
         context = {
@@ -139,7 +143,10 @@ class ReservationView(View):
     def post(self, request):
         try:
             self.save_reservation(request)
-            return HttpResponse('thanks')
+            # return HttpResponse('thanks')
+            return HttpResponseRedirect('/order_and_reservation')
+
+
         except Exception as error:
             print('Caught this error: ' + repr(error))
 
