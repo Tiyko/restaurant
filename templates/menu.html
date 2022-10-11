@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 
 <h1>MENU</h1>
@@ -10,11 +10,11 @@
     <img src=" {{ menu_item.imageUrl.url }}" width="20%">
     <li>{{menu_item.meal_name}}</li>
     <li>{{menu_item.meal_description}}</li>
-    <input id="quantity" type="number" value="" name="quantity">
+    <input id="quantity" type="number" value="" name="quantity" required>
+    <input id="menu_id" name="menu_id" type="hidden" value="{{menu_item.id}}">
 
-    <button action="put" id={{menu_item.id}}><span>{{ menu_item.price }}</span> EUR</button>
+    <button><span>{{ menu_item.price }}</span> EUR</button>
 </form>
 <hr>
-
 {%endfor%}
 {%endblock%}

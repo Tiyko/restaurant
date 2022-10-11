@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Post, Menu, Items, Reservation, User, Orders, Customer, Address
-from .forms import CommentForm, ReservationForm, ItemsForm
+from .forms import CommentForm, ReservationForm, OrderForm
 
 
 def restaurant(request):
@@ -21,11 +21,8 @@ class ViewMenu(View):
     item_model = Items
 
     def get_user(self, request):
-        if request.user.is_authenticated:  
-            user_instance = User.objects.get(id=request.user.id)
-            return user_instance
-        else:
-            return None
+        user_instance = ReservationView().get_user(request)
+        return user_instance
 
     def get_address(self, user_instance_id):         
         try:
@@ -48,39 +45,68 @@ class ViewMenu(View):
             address=address_instance
         )
         return customer_instance
-# Under Construction
 
-    def get_menu(self, menu_instance):
-        try:
-            menu_instance = Items.objects.get(id_menu_id)
-            return menu_instance
-        except Exception as error:
-            print('Caught this error: ' + repr(error))
+    def create_update_order(self, customer_instance, items_total, order_instance):
+        if order_instance is None:
+            order_instance = Orders(
+                total_price=self.calculate_total_price(0, items_total),
+                customer=customer_instance
+                ) 
+            order_instance.save()
+            return order_instance
+        order_instance_update = order_instance
+        order_instance_update.total_price = self.calculate_total_price(order_instance.total_price, items_total)
+        order_instance_update.save()
+        return order_instance_update
 
-    # def get_items(self, get_items, user_instance_id):
-    #     items_instance = Items.objects.get(id=user_instance_id)
-    #     return items_instance
+    def calculate_total_price(self, old_order_price, items_total):
+        totalprice = old_order_price + items_total
+        return totalprice 
 
-# UC
+    def get_order(self, order_id, customer_instance, items_total):
+        # seek if 404 or filter     
+        order_instance = Orders.objects.filter(id=order_id).first()
+        x = self.create_update_order(customer_instance, items_total, order_instance)
+        return x
+
     def post(self, request):
         user_instance = self.get_user(request)
-        address_instance = self.get_address(user_instance.id)
-        customer_instance = self.get_customer(user_instance.id)
-        if customer_instance is None:
-            customer_instance = self.create_customer(user_instance, address_instance)
-            customer_instance.save()
-# UC
-        el = 345
-        # items_instance = self.get_items(user_instance.id)
-        menu_instance = self.get_menu(user_instance.id)
+        if user_instance is not None:
+            address_instance = self.get_address(user_instance.id)
+            customer_instance = self.get_customer(user_instance.id)
+            if customer_instance is None:
+                customer_instance = self.create_customer(user_instance, address_instance)
+                customer_instance.save()
 
-        ela = 3
-# UC
+            # get the user infomation the form 
+            user_information_from_the_form = request.POST
+            quantity = user_information_from_the_form.get('quantity')
+            menu_id = user_information_from_the_form.get('menu_id')
+            # todo include validation as required on the form because 0 *anything = 0 and just receive numbers maybe type number
+            menu_instance = Menu.objects.get(id=menu_id)
+            
+            items_total = Items().get_total(int(quantity), menu_instance.price)
+            # todo create a mechanism to keep the order_id  to add new items in the form, for now not available, change model to have order_opened
+            order_id = 0
+            # order_instance = self.create_update_order(customer_instance, items_total)
+            order_instance = self.get_order(order_id, customer_instance, items_total)     
+
+            items_instance = Items( 
+                price=menu_instance.price,
+                id_menu=menu_instance,
+                order=order_instance,
+                quantity=quantity
+            )
+            items_instance.save()
+
+            context = {
+                'message': 'Thank you for your order' + str(order_instance.id)
+                }
+            return HttpResponseRedirect('/order_and_reservation', context) 
+        else:
+            return render(request, "account/login.html")
+
         # Should get the id from the selected menu item (menu.id), considering the request.POST object as the information's owner from the html form, with this id should get from database using the menu model and instatiate a Menu object to put it into in items after.
-
-# Under Construction
-
-        return HttpResponseRedirect('/order_and_reservation') 
 
     def get(self, request):
         context = {
@@ -143,12 +169,10 @@ class ReservationView(View):
     def post(self, request):
         try:
             self.save_reservation(request)
-            # return HttpResponse('thanks')
             return HttpResponseRedirect('/order_and_reservation')
-
-
         except Exception as error:
             print('Caught this error: ' + repr(error))
+
 
 class PostList(generic.ListView):
     model = Post

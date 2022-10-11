@@ -110,3 +110,6 @@ class Items(models.Model):
     class Meta:
         verbose_name = 'Items'
         verbose_name_plural = 'Items'
+
+    def get_total(self, quantity, price):
+        return  quantity*price

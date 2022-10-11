@@ -11,18 +11,18 @@
 {% endif %}
 
 <h1>Orders and Reservations</h1>
-
+<p>{{message}}</p>
 <h2>Orders</h2>
 {% if user.is_authenticated %}
 {% for orders_item in orders_items %}
-<li>{{ orders_item.order.created_on }}</li>
-<li>{{ orders_item.order.customer.user.username }}</li>
-<li>{{ orders_item.order.customer.address.address }}</li>
-<li>{{ orders_item.order.customer.address.zipcode }}</li>
-<li>{{ orders_item.id_menu.meal_name }}</li>
-<li>{{ orders_item.price }}</li>
-<li>{{ orders_item.order.id }}</li>
-<li>{{ orders_item.order.customer.user.email }}</li>
+<li>Order created on: {{ orders_item.order.created_on }}</li>
+<li>Username: {{ orders_item.order.customer.user.username }}</li>
+<li>Address: {{ orders_item.order.customer.address.address }}</li>
+<li>Zipcode: {{ orders_item.order.customer.address.zipcode }}</li>
+<li>Meal name:{{ orders_item.id_menu.meal_name }}</li>
+<li>Meal price: {{ orders_item.price }}</li>
+<li>Order ID: {{ orders_item.order.id }}</li>
+<li>Email: {{ orders_item.order.customer.user.email }}</li>
 <button>Add</button>
 <button>Delete</button>
 <hr>
