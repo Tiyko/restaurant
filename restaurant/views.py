@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.views import generic, View
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Post, Menu, Items, Reservation, User, Orders, Customer, Address
@@ -99,10 +99,9 @@ class ViewMenu(View):
             )
             items_instance.save()
 
-            context = {
-                'message': 'Thank you for your order' + str(order_instance.id)
-                }
-            return HttpResponseRedirect('/order_and_reservation', context) 
+            message = 'Thank you for your order number ' + str(order_instance.id)
+
+            return redirect('/order_and_reservation/?message=' + message)
         else:
             return render(request, "account/login.html")
 
@@ -117,14 +116,30 @@ class ViewMenu(View):
 
 
 class ViewOrderAndReservation(View):
-    order_model = Items
+    items_order = Items
     reservation_model = Reservation
 
+    def post(self, request):
+        return render(request, "order_and_reservation.html", context)
+
     def get(self, request):
+        order_message = request.GET.get('message')
+        if order_message is None:
+            order_message = ''
+        reservations_from_user = self.reservation_model.objects.filter(username=request.user.id)
+        items_from_user = None
+        customer_instance = Customer.objects.filter(user=request.user.id).first()
+        if customer_instance is not None:
+            order_instance = Orders.objects.filter(customer=customer_instance)
+            if order_instance is not None:
+                items_from_user = self.items_order.objects.filter(order__in=order_instance)
+
         context = {
-            'orders_items': self.order_model.objects.all(),
-            'reservations_items': self.reservation_model.objects.all(),
+            'orders_items': items_from_user,
+            'reservations_items': reservations_from_user,
+            'message': order_message
         }
+
         return render(request, "order_and_reservation.html", context)
 
 
@@ -169,7 +184,7 @@ class ReservationView(View):
     def post(self, request):
         try:
             self.save_reservation(request)
-            return HttpResponseRedirect('/order_and_reservation')
+            return HttpResponseRedirect('/order_and_reservation/?message=' + 'Thank you for your reservation')
         except Exception as error:
             print('Caught this error: ' + repr(error))
 

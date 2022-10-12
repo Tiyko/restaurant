@@ -8,12 +8,20 @@
         <a class="nav-link" href="{% url 'account_email' %}">Change Email</a>
     </li>
 </ul>
+<ul>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'account_change_password' %}">Change Password</a>
+    </li>
+</ul>
 {% endif %}
 
 <h1>Orders and Reservations</h1>
 <p>{{message}}</p>
 <h2>Orders</h2>
 {% if user.is_authenticated %}
+{% if orders_items is None %}
+<p>No orders, make a order in menu page.</p>
+{% else %}
 {% for orders_item in orders_items %}
 <li>Order created on: {{ orders_item.order.created_on }}</li>
 <li>Username: {{ orders_item.order.customer.user.username }}</li>
@@ -23,21 +31,32 @@
 <li>Meal price: {{ orders_item.price }}</li>
 <li>Order ID: {{ orders_item.order.id }}</li>
 <li>Email: {{ orders_item.order.customer.user.email }}</li>
-<button>Add</button>
-<button>Delete</button>
+<form action="" method="post">
+{% csrf_token %}
+<input id="order_id" value="{{ orders_item.order.id }}" type="hidden">
+Delivered <input id="delivered" value="" type="checkbox" name="Delivered">
+<button id="edit_delivered_order" >EDIT</button>
+<button id="delete_order">Delete</button>
+</form>
 <hr>
 {% endfor %}
+{% endif %}
+
 
 <h2>Reservations</h2>
+{% if reservations_items is None %}
+<p>No reservation, do one in menu page.</p>
+{% else %}
 {% for reservation_item in reservations_items %}
 <li>{{ reservation_item.username.first_name }} {{ reservation_item.username.last_name }}</li>
 <li>{{ reservation_item.reservation_date }}</li>
 <li>{{ reservation_item.reservation_time }}</li>
 <li>{{ reservation_item.username.email }}</li>
-<button>Add</button>
+<button>EDIT</button>
 <button>Delete</button>
 <hr>
 {% endfor %}
+{% endif %}
 {% endif %}
 
 {%endblock%}
