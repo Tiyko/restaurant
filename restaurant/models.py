@@ -4,9 +4,6 @@ from cloudinary.models import CloudinaryField
 from datetime import datetime
 
 
-STATUS = ((0, "Draft"), (1, "Published"))
-
-
 class Post(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
@@ -17,7 +14,6 @@ class Post(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS, default=0)
     likes = models.ManyToManyField(
         User, related_name='meal_like', blank=True)
 
@@ -38,7 +34,6 @@ class Comment(models.Model):
     email = models.EmailField()
     body = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    approved = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["created_on"]
@@ -112,4 +107,4 @@ class Items(models.Model):
         verbose_name_plural = 'Items'
 
     def get_total(self, quantity, price):
-        return  quantity*price
+        return quantity*price

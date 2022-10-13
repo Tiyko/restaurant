@@ -9,9 +9,6 @@ def restaurant(request):
     return render(request, 'index.html')
 
 
-# def menu(request):
-#     return render(request, 'menu.html')
-
 def about_us(request):
     return render(request, 'about_us.html')
 
@@ -191,7 +188,7 @@ class ReservationView(View):
 
 class PostList(generic.ListView):
     model = Post
-    queryset = Post.objects.filter(status=1).order_by('-created_on')
+    queryset = Post.objects.all().order_by('-created_on')
     template_name = 'index.html'
     paginate_by = 6
 
@@ -199,9 +196,9 @@ class PostList(generic.ListView):
 class PostDetail(View):
 
     def get(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(status=1)
+        queryset = Post.objects.filter(created_on=True)
         post = get_object_or_404(queryset, slug=slug)
-        comments = post.comments.filter(approved=True).order_by('created_on')
+        comments = post.comments.filter(name=True).order_by('created_on')
         liked = False
         if post.likes.filter(id=self.request.user.id).exists():
             liked = True
@@ -219,9 +216,9 @@ class PostDetail(View):
         )
 
     def post(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(status=1)
+        queryset = Post.objects.filter(created_on=True)
         post = get_object_or_404(queryset, slug=slug)
-        comments = post.comments.filter(approved=True).order_by('created_on')
+        comments = post.comments.filter(name=True).order_by('created_on')
         liked = False
         if post.likes.filter(id=self.request.user.id).exists():
             liked = True
@@ -251,7 +248,7 @@ class PostDetail(View):
 
 
 class PostLike(View):
-
+    
     def post(self, request, slug, *args, **kwargs):
         post = get_object_or_404(Post, slug=slug)
         if post.likes.filter(id=request.user.id).exists():
