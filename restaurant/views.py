@@ -61,10 +61,8 @@ class ViewMenu(View):
         return totalprice 
 
     def get_order(self, order_id, customer_instance, items_total):
-        # seek if 404 or filter     
         order_instance = Orders.objects.filter(id=order_id).first()
-        x = self.create_update_order(customer_instance, items_total, order_instance)
-        return x
+        return self.create_update_order(customer_instance, items_total, order_instance)
 
     def post(self, request):
         user_instance = self.get_user(request)
@@ -75,17 +73,12 @@ class ViewMenu(View):
                 customer_instance = self.create_customer(user_instance, address_instance)
                 customer_instance.save()
 
-            # get the user infomation the form 
             user_information_from_the_form = request.POST
             quantity = user_information_from_the_form.get('quantity')
             menu_id = user_information_from_the_form.get('menu_id')
-            # todo include validation as required on the form because 0 *anything = 0 and just receive numbers maybe type number
             menu_instance = Menu.objects.get(id=menu_id)
-            
             items_total = Items().get_total(int(quantity), menu_instance.price)
-            # todo create a mechanism to keep the order_id  to add new items in the form, for now not available, change model to have order_opened
-            order_id = 0
-            # order_instance = self.create_update_order(customer_instance, items_total)
+            order_id = request.POST.get('order_from_basket')
             order_instance = self.get_order(order_id, customer_instance, items_total)     
 
             items_instance = Items( 
@@ -96,18 +89,25 @@ class ViewMenu(View):
             )
             items_instance.save()
 
-            message = 'Thank you for your order number ' + str(order_instance.id)
+            message = 'Your item was added ' # + str(order_instance.id)
 
-            return redirect('/order_and_reservation/?message=' + message)
+            # return redirect('/order_and_reservation/?message=' + message)
+            return redirect('/basket/?message=' + message)
         else:
             return render(request, "account/login.html")
 
-        # Should get the id from the selected menu item (menu.id), considering the request.POST object as the information's owner from the html form, with this id should get from database using the menu model and instatiate a Menu object to put it into in items after.
-
     def get(self, request):
+        order_from_basket = 0
+        if not request.user.is_authenticated:
+            return redirect('/menu', request)
+        elif request.session['order_from_basket'] is not None:
+            order_from_basket = request.session['order_from_basket']
+
+        
         context = {
             'menu_items': self.model.objects.all(),
             'order_items': self.item_model.objects.all(),
+            'order_from_basket': order_from_basket
         }
         return render(request, "menu.html", context)
 
@@ -117,7 +117,8 @@ class ViewOrderAndReservation(View):
     reservation_model = Reservation
 
     def post(self, request):
-        return render(request, "order_and_reservation.html", context)
+        # CREATE DELETE - CANCEL ORDER
+        return render(request, "order_and_reservation.html")
 
     def get(self, request):
         order_message = request.GET.get('message')
@@ -153,7 +154,7 @@ class ReservationView(View):
         try:
             object_reservation_form = ReservationForm(data=request.POST)
             form_info = object_reservation_form.data.dict()
-    
+
             user_instance = self.get_user(request)
 
             reservation_instance = Reservation(
@@ -186,9 +187,48 @@ class ReservationView(View):
             print('Caught this error: ' + repr(error))
 
 
+class BasketView(View):
+
+    def post(self, request):
+        if request.POST.get('pay') == 'pay':
+            # CREATE COLUMN IN THE MODELS 
+            # CLEAN THE SESSION 
+            request.session['order_from_basket'] = None
+            return HttpResponseRedirect('/order_and_reservation/?message=' + 'Thank you for your order!')
+        elif request.POST.get('add_more_items') == 'add_more_items':
+            context = {'order_id': request.POST.get('order_id')}
+            request.session['order_from_basket'] = request.POST.get('order_id')
+            return redirect('/menu', request, context)
+        elif request.POST.get('remove_item') == 'remove_item':
+            item_id = request.POST.get('item_id')
+            # CALCULATE NEW TOTAL PRICE IN ORDER
+            Items.objects.get(id=item_id).delete()
+            return redirect('/basket', request)
+
+    def get(self, request):
+        order_message = request.GET.get('message')
+        if order_message is None:
+            order_message = ''
+        items_from_user = None
+        customer_instance = Customer.objects.filter(user=request.user.id).first()
+        if customer_instance is not None:
+            order_instance = Orders.objects.filter(customer=customer_instance).last() # SELECT WHERE PAY IS FALSE
+            if order_instance is not None:
+                items_from_user = Items.objects.filter(order=order_instance)
+
+        context = {
+            'orders_items': items_from_user,
+            'message': order_message,
+            'order_id': order_instance.id,
+            'total_price': order_instance.total_price
+        }
+
+        return render(request, "basket.html", context)
+
+
 class PostList(generic.ListView):
     model = Post
-    queryset = Post.objects.all().order_by('-created_on')
+    queryset = Post.objects.filter(author=True).order_by('-created_on')
     template_name = 'index.html'
     paginate_by = 6
 
@@ -196,7 +236,7 @@ class PostList(generic.ListView):
 class PostDetail(View):
 
     def get(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(created_on=True)
+        queryset = Post.objects.filter(author=True)
         post = get_object_or_404(queryset, slug=slug)
         comments = post.comments.filter(name=True).order_by('created_on')
         liked = False
@@ -216,7 +256,7 @@ class PostDetail(View):
         )
 
     def post(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(created_on=True)
+        queryset = Post.objects.filter(author=True)
         post = get_object_or_404(queryset, slug=slug)
         comments = post.comments.filter(name=True).order_by('created_on')
         liked = False

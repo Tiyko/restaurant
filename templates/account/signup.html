@@ -11,10 +11,6 @@
 
 <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
   {% csrf_token %}
-  <label for="first_name">First name: </label>
-  <input id="first_name" type="text" name="first_name" maxlength="100" required>
-  <label for="last_name">Last name: </label>
-  <input id="last_name" type="text" name="last_name" maxlength="100" required>
   {{ form.as_p }}
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />

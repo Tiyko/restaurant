@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
+{% load crispy_forms_tags %}
 
 {% if user.is_authenticated %}
 <ul>
@@ -25,18 +26,19 @@
 {% for orders_item in orders_items %}
 <li>Order created on: {{ orders_item.order.created_on }}</li>
 <li>Username: {{ orders_item.order.customer.user.username }}</li>
+<li>Full Name: {{ orders_item.order.customer.user.first_name }} {{ orders_item.order.customer.user.last_name }}</li>
 <li>Address: {{ orders_item.order.customer.address.address }}</li>
 <li>Zipcode: {{ orders_item.order.customer.address.zipcode }}</li>
-<li>Meal name:{{ orders_item.id_menu.meal_name }}</li>
+<li>Meal name: {{ orders_item.id_menu.meal_name }}</li>
 <li>Meal price: {{ orders_item.price }}</li>
+<li>Quantity: {{ orders_item.quantity }}</li>
+<li>Total price: {{ orders_item.order.total_price }}</li>
 <li>Order ID: {{ orders_item.order.id }}</li>
 <li>Email: {{ orders_item.order.customer.user.email }}</li>
 <form action="" method="post">
 {% csrf_token %}
 <input id="order_id" value="{{ orders_item.order.id }}" type="hidden">
-Delivered <input id="delivered" value="" type="checkbox" name="Delivered">
-<button id="edit_delivered_order" >EDIT</button>
-<button id="delete_order">Delete</button>
+<button id="delete_order">Cancel Order</button>
 </form>
 <hr>
 {% endfor %}
@@ -48,12 +50,11 @@ Delivered <input id="delivered" value="" type="checkbox" name="Delivered">
 <p>No reservation, do one in menu page.</p>
 {% else %}
 {% for reservation_item in reservations_items %}
-<li>{{ reservation_item.username.first_name }} {{ reservation_item.username.last_name }}</li>
-<li>{{ reservation_item.reservation_date }}</li>
-<li>{{ reservation_item.reservation_time }}</li>
-<li>{{ reservation_item.username.email }}</li>
-<button>EDIT</button>
-<button>Delete</button>
+<li>Full Name: {{ reservation_item.username.first_name }} {{ reservation_item.username.last_name }}</li>
+<li>Date: {{ reservation_item.reservation_date }}</li>
+<li>Time: {{ reservation_item.reservation_time }}</li>
+<li>Email: {{ reservation_item.username.email }}</li>
+<button>Cancel Rservation</button>
 <hr>
 {% endfor %}
 {% endif %}

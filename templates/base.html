@@ -6,48 +6,88 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <title>Luigi's Castle Pizza</title>
 </head>
 <body>
-        <nav>
-            <ul>
+    <nav>
+        <ul>
 
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'order_and_reservation' %}">Your Account</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                        /
-                        <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
-                    </li>
-                    {% endif %}
-
+                {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'menu' %}">Menu</a>
+                    <a class="nav-link" href="{% url 'order_and_reservation' %}">Your Account</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
+                    <a class="nav-link" href="{% url 'basket' %}">Basket</a>
                 </li>
-
-            </ul>
-        </nav>
-
-            <ul>
+                {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'book_reservation' %}">Book a Reservation</a>
+                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                    /
+                    <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
                 </li>
-            </ul>
+                {% endif %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'menu' %}">Menu</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <ul>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'book_reservation' %}">Book a Reservation</a>
+        </li>
+    </ul>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
+                    {{ message | safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <main class="flex-shrink-0 main-bg">
 
         {% block content %}
         <!-- Content Goes here -->
         {% endblock content %}
+    </main>
+
+
+    <script>
+        setTimeout(function () {
+            let messages = document.getElementById('msg');
+            let alert = new bootstrap.Alert(messages);
+            alert.close();
+        }, 2500);
+    </script>
 </body>
 </html>
