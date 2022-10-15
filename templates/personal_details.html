@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>PERSONAL DETAILS</h1>
+<h1>add your address to conclude your order</h1>
+<form action="" method="post">
+    {% csrf_token %}
+
+<li> {{last_name}}</li>
+<li> {{first_name}}</li>
+<li> {{email}}</li>
+<li> {{address}}</li>
+<li> {{zipcode}}</li>
+
+
+   first_name <input id="first_name" value="" name="first_name" type="text">
+  last_name <input id="last_name" value="" name="last_name" type="text">
+    <input id="email" value="" name="email" type="text">
+    <input id="address" value="" name="address" type="text" required>
+    <input id="zipcode" value="" name="zipcode" type="text" required>
+    <button id="save_personal_details" value="save_personal_details" name="save_personal_details">Save Details</button>
+</form>
+
+{%endblock%}

@@ -15,13 +15,13 @@
 <li>Meal name: {{ orders_item.id_menu.meal_name }}</li>
 <li>Meal price: {{ orders_item.price }}</li>
 <li>Quantity: {{ orders_item.quantity }}</li>
-<input id="item_id" value="{{ orders_item.id }}" type="hidden" name="item_id">
-<button id="remove_item" value="remove_item" name="remove_item">Remove</button>
+<input id="item_id" value="{{ orders_item.id }}" type="text" name="item_id" readonly="readonly">
+<button id="remove_item" value="{{ orders_item.id }}" name="remove_item">Remove</button>
 <hr>
 {% endfor %}
 <li>Total price: {{ total_price }}</li>
-    <input id="order_id" value="{{ order_id }}" type="hidden" name="order_id">
-    <button id="add_more_items" value="add_more_items" name="add_more_items">Add more items</button>
+    <input id="order_id" value="{{ order_id }}" type="text" name="order_id" readonly="readonly">
+    <button id="add_more_items" value="add_more_items" name="add_more_items" >Add more items</button>
     <button id="pay" value="pay" name="pay">Pay</button>
 </form>
 

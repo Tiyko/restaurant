@@ -11,7 +11,7 @@
     <img src=" {{ menu_item.imageUrl.url }}" width="20%">
     <li>{{menu_item.meal_name}}</li>
     <li>{{menu_item.meal_description}}</li>
-    <input id="quantity" type="number" value="" name="quantity" required>
+    <input id="quantity" type="number" min="1" value="" name="quantity" required>
     <input id="menu_id" name="menu_id" type="hidden" value="{{menu_item.id}}">
     <input id="order_from_basket" name="order_from_basket" type="hidden" value="{{order_from_basket}}">
     <button><span>{{ menu_item.price }}</span> EUR</button>

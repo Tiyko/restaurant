@@ -20,6 +20,7 @@
 <p>{{message}}</p>
 <h2>Orders</h2>
 {% if user.is_authenticated %}
+<form action="" method="post">
 {% if orders_items is None %}
 <p>No orders, make a order in menu page.</p>
 {% else %}
@@ -35,10 +36,9 @@
 <li>Total price: {{ orders_item.order.total_price }}</li>
 <li>Order ID: {{ orders_item.order.id }}</li>
 <li>Email: {{ orders_item.order.customer.user.email }}</li>
-<form action="" method="post">
 {% csrf_token %}
-<input id="order_id" value="{{ orders_item.order.id }}" type="hidden">
-<button id="delete_order">Cancel Order</button>
+<input id="order_id" value="{{ orders_item.order.id }}" name="order_id" type="hidden">
+<button id="delete_order" value="{{ orders_item.order.id }}" name="delete_order">Cancel Order</button>
 </form>
 <hr>
 {% endfor %}
@@ -54,10 +54,14 @@
 <li>Date: {{ reservation_item.reservation_date }}</li>
 <li>Time: {{ reservation_item.reservation_time }}</li>
 <li>Email: {{ reservation_item.username.email }}</li>
-<button>Cancel Rservation</button>
+
+    {% csrf_token %}
+    <input id="reservations_items_id" value="{{ reservation_item.id}}" name="reservations_items_id" type="hidden">
+    <button id="delete_reservation" value="{{ reservation_item.id }}" name="delete_reservation">Cancel Reservation</button>
 <hr>
 {% endfor %}
 {% endif %}
+</form>
 {% endif %}
 
 {%endblock%}

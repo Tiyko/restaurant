@@ -1,12 +1,4 @@
 from django import forms
-from .models import Comment
-
-
-class CommentForm(forms.ModelForm):
-
-    class Meta:
-        model = Comment
-        fields = ('body',)
 
 
 class ReservationForm(forms.Form):
@@ -16,8 +8,3 @@ class ReservationForm(forms.Form):
     time = forms.TimeField()
     date = forms.DateField()
     number_of_people = forms.FloatField()
-
-
-class OrderForm(forms.Form):
-    menu_id = forms.IntegerField()
-    quantity = forms.IntegerField()

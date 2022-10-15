@@ -1,8 +1,8 @@
-from django.shortcuts import render, get_object_or_404, reverse, redirect
-from django.views import generic, View
-from django.http import HttpResponseRedirect, HttpResponse
-from .models import Post, Menu, Items, Reservation, User, Orders, Customer, Address
-from .forms import CommentForm, ReservationForm, OrderForm
+from django.shortcuts import render, redirect
+from django.views import View
+from django.http import HttpResponseRedirect
+from .models import Menu, Items, Reservation, User, Orders, Customer, Address
+from .forms import ReservationForm
 
 
 def restaurant(request):
@@ -13,6 +13,39 @@ def about_us(request):
     return render(request, 'about_us.html')
 
 
+class PersonalDetailsView(View):
+
+    def get(self, request):
+        user_instance = User.objects.get(id=request.user.id)
+        if user_instance is not None:
+            address_instance = Address.objects.filter(username=user_instance).first()
+
+        context = {
+            'first_name': user_instance.first_name,
+            'last_name': user_instance.last_name,
+            'email': user_instance.email,
+            'address': address_instance.address,
+            'zipcode': address_instance.zipcode
+        }
+        return render(request, "personal_details.html", context)
+
+    def post(self, request):
+        user_instance = User.objects.get(id=request.user.id)
+        if user_instance is not None:
+            address_instance = Address(
+                username=user_instance,
+                address=request.POST.get('address'),
+                zipcode=request.POST.get('zipcode')
+            )
+            address_instance.save()
+
+            user_instance.email = request.POST.get('email')
+            user_instance.first_name = request.POST.get('first_name')
+            user_instance.last_name = request.POST.get('last_name')
+            user_instance.save()
+        return redirect('/menu', request)
+
+
 class ViewMenu(View):
     model = Menu
     item_model = Items
@@ -21,10 +54,10 @@ class ViewMenu(View):
         user_instance = ReservationView().get_user(request)
         return user_instance
 
-    def get_address(self, user_instance_id):         
+    def get_address(self, user_instance_id):
         try:
             address_instance = Address.objects.get(username_id=user_instance_id)
-            return address_instance            
+            return address_instance
         except Exception as error:
             print('Caught this error: ' + repr(error))
 
@@ -68,6 +101,9 @@ class ViewMenu(View):
         user_instance = self.get_user(request)
         if user_instance is not None:
             address_instance = self.get_address(user_instance.id)
+            if address_instance is None:
+                return redirect('/personal_details', request)
+
             customer_instance = self.get_customer(user_instance.id)
             if customer_instance is None:
                 customer_instance = self.create_customer(user_instance, address_instance)
@@ -89,21 +125,15 @@ class ViewMenu(View):
             )
             items_instance.save()
 
-            message = 'Your item was added ' # + str(order_instance.id)
-
-            # return redirect('/order_and_reservation/?message=' + message)
+            message = 'Your item was added '
             return redirect('/basket/?message=' + message)
         else:
             return render(request, "account/login.html")
 
     def get(self, request):
         order_from_basket = 0
-        if not request.user.is_authenticated:
-            return redirect('/menu', request)
-        elif request.session['order_from_basket'] is not None:
+        if request.session.get('order_from_basket', False):    
             order_from_basket = request.session['order_from_basket']
-
-        
         context = {
             'menu_items': self.model.objects.all(),
             'order_items': self.item_model.objects.all(),
@@ -117,8 +147,14 @@ class ViewOrderAndReservation(View):
     reservation_model = Reservation
 
     def post(self, request):
-        # CREATE DELETE - CANCEL ORDER
-        return render(request, "order_and_reservation.html")
+
+        if request.POST.get('delete_order') is not None:
+            order_instance = Orders.objects.get(id=request.POST.get('delete_order'))
+            order_instance.delete()
+        elif request.POST.get('delete_reservation') is not None:
+            reservation_instance = Reservation.objects.get(id=request.POST.get('delete_reservation'))
+            reservation_instance.delete()
+        return redirect('/order_and_reservation', request)
 
     def get(self, request):
         order_message = request.GET.get('message')
@@ -188,112 +224,54 @@ class ReservationView(View):
 
 
 class BasketView(View):
+    def calculate_remained_total_price(self,total_order_price, total_items_price):
+        remained_total = total_order_price - total_items_price
+        return remained_total
 
     def post(self, request):
+    
         if request.POST.get('pay') == 'pay':
-            # CREATE COLUMN IN THE MODELS 
-            # CLEAN THE SESSION 
+            order_instance = Orders.objects.get(id=request.POST.get('order_id'))
+            order_instance.paid = True
+            order_instance.save()
             request.session['order_from_basket'] = None
-            return HttpResponseRedirect('/order_and_reservation/?message=' + 'Thank you for your order!')
+            return HttpResponseRedirect(
+                '/order_and_reservation/?message=' + 'Thank you for your order!'
+                )
+
         elif request.POST.get('add_more_items') == 'add_more_items':
-            context = {'order_id': request.POST.get('order_id')}
             request.session['order_from_basket'] = request.POST.get('order_id')
-            return redirect('/menu', request, context)
-        elif request.POST.get('remove_item') == 'remove_item':
-            item_id = request.POST.get('item_id')
-            # CALCULATE NEW TOTAL PRICE IN ORDER
-            Items.objects.get(id=item_id).delete()
+            return redirect('/menu', request)
+
+        elif request.POST.get('remove_item') is not None:
+            item_id = request.POST.get('remove_item')
+            item_instance = Items.objects.get(id=item_id)
+
+            order_instance = Orders.objects.get(id=request.POST.get('order_id'))   
+            total_items_price  = Items().get_total(item_instance.quantity, item_instance.price)
+            order_instance.total_price = self.calculate_remained_total_price(order_instance.total_price, total_items_price)
+
+            order_instance.save()
+            item_instance.delete()
             return redirect('/basket', request)
 
     def get(self, request):
+        order_instance = None
         order_message = request.GET.get('message')
         if order_message is None:
             order_message = ''
         items_from_user = None
         customer_instance = Customer.objects.filter(user=request.user.id).first()
         if customer_instance is not None:
-            order_instance = Orders.objects.filter(customer=customer_instance).last() # SELECT WHERE PAY IS FALSE
+            order_instance = Orders.objects.filter(customer=customer_instance).filter(paid=False).last()
             if order_instance is not None:
                 items_from_user = Items.objects.filter(order=order_instance)
 
         context = {
             'orders_items': items_from_user,
             'message': order_message,
-            'order_id': order_instance.id,
-            'total_price': order_instance.total_price
+            'order_id': 0 if order_instance is None else order_instance.id,
+            'total_price': None if order_instance is None else order_instance.total_price
         }
 
         return render(request, "basket.html", context)
-
-
-class PostList(generic.ListView):
-    model = Post
-    queryset = Post.objects.filter(author=True).order_by('-created_on')
-    template_name = 'index.html'
-    paginate_by = 6
-
-
-class PostDetail(View):
-
-    def get(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(author=True)
-        post = get_object_or_404(queryset, slug=slug)
-        comments = post.comments.filter(name=True).order_by('created_on')
-        liked = False
-        if post.likes.filter(id=self.request.user.id).exists():
-            liked = True
-
-        return render(
-            request,
-            'post_detail.html',
-            {
-                'post': post,
-                'comments': comments,
-                'commented': False,
-                'liked': liked,
-                'comment_form': CommentForm()
-            },
-        )
-
-    def post(self, request, slug, *args, **kwargs):
-        queryset = Post.objects.filter(author=True)
-        post = get_object_or_404(queryset, slug=slug)
-        comments = post.comments.filter(name=True).order_by('created_on')
-        liked = False
-        if post.likes.filter(id=self.request.user.id).exists():
-            liked = True
-
-        comment_form = CommentForm(data=request.POST)
-
-        if comment_form.is_valid():
-            comment_form.instance.email = request.user.email
-            comment_form.instance.name = request.user.username
-            comment = comment_form.save(commit=False)
-            comment.post = post
-            comment.save()
-        else:
-            comment_form = CommentForm()
-
-        return render(
-            request,
-            'post_detail.html',
-            {
-                'post': post,
-                'comments': comments,
-                'commented': True,
-                'liked': liked,
-                'comment_form': CommentForm()
-            },
-        )
-
-
-class PostLike(View):
-    
-    def post(self, request, slug, *args, **kwargs):
-        post = get_object_or_404(Post, slug=slug)
-        if post.likes.filter(id=request.user.id).exists():
-            post.likes.remove(request.user)
-        else:
-            post.likes.add(request.user)
-
-        return HttpResponseRedirect(reverse('post_detail', args=[slug]))
