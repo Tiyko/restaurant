@@ -24,8 +24,8 @@ class PersonalDetailsView(View):
             'first_name': user_instance.first_name,
             'last_name': user_instance.last_name,
             'email': user_instance.email,
-            'address': address_instance.address,
-            'zipcode': address_instance.zipcode
+            'address': '' if address_instance is None else address_instance.address,
+            'zipcode': '' if address_instance is None else address_instance.zipcode
         }
         return render(request, "personal_details.html", context)
 
@@ -56,14 +56,14 @@ class ViewMenu(View):
 
     def get_address(self, user_instance_id):
         try:
-            address_instance = Address.objects.get(username_id=user_instance_id)
+            address_instance = Address.objects.filter(username_id=user_instance_id).first()
             return address_instance
         except Exception as error:
             print('Caught this error: ' + repr(error))
 
     def get_customer(self, user_instance_id):
         try:
-            customer_instance = Customer.objects.get(user_id=user_instance_id)
+            customer_instance = Customer.objects.filter(user_id=user_instance_id).first()
             return customer_instance
 
         except Exception as error:    
@@ -218,7 +218,8 @@ class ReservationView(View):
     def post(self, request):
         try:
             self.save_reservation(request)
-            return HttpResponseRedirect('/order_and_reservation/?message=' + 'Thank you for your reservation')
+            message = 'Thank you for your reservation'
+            return HttpResponseRedirect('/order_and_reservation/?message=' + message)
         except Exception as error:
             print('Caught this error: ' + repr(error))
 
@@ -235,9 +236,8 @@ class BasketView(View):
             order_instance.paid = True
             order_instance.save()
             request.session['order_from_basket'] = None
-            return HttpResponseRedirect(
-                '/order_and_reservation/?message=' + 'Thank you for your order!'
-                )
+            message = 'Thank you for your order!'
+            return HttpResponseRedirect('/order_and_reservation/?message=' + message)
 
         elif request.POST.get('add_more_items') == 'add_more_items':
             request.session['order_from_basket'] = request.POST.get('order_id')
