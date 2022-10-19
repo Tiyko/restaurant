@@ -187,7 +187,7 @@ CLOUDINARY_STORAGE = {
 cloudinary.config(
     cloud_name=config('CLOUD_NAME'),
     api_key=config('API_KEY'),
-    api_secret=config('API_KEY'),
+    api_secret=config('API_SECRET'),
 )
 
 # Default primary key field type
