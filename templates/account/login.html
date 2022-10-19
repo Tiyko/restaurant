@@ -6,26 +6,33 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
+<div class="mt-5 pb-5"></div>
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-8 mt-3 offset-md-2">
-      <h3>{% trans "Sign In" %}</h3>
+  <div class="row justify-content-center my-5">
+    <div class="col-sm-10 col-md-6">
+      <h1 class="d-flex justify-content-center">{% trans "Sign In" %}</h1>
 
-      <p>Welcome back to the code|star blog. To leave a comment or like a post, please log in. If you
+      <p>
+        Welcome back to Luigi's Castle, Pizza Restaurant. To make an order or a reservation, please log in. If you
         have not created an account yet, then <a class="link" href="{% url 'account_signup' %}">sign up</a>
-        first.</p>
+        first.
+      </p>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-8 mt-3 offset-md-2">
+  <div class="row justify-content-center my-5">
+    <div class="col-sm-10 col-md-6 d-flex justify-content-center">
       <form class="login" method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
         {{ form.as_p }}
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
-        <button class="btn btn-signup right" type="submit">{% trans "Sign In" %}</button>
+        <li class="d-flex justify-content-center">
+          <button class="btn btn-warning" type="submit">{% trans "Sign In" %}</button>
+          <a class="d-flex justify-content-center align-items-center ms-3" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+        </li>
+        
       </form>
     </div>
   </div>
