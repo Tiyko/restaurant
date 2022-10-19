@@ -1,26 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="mt-5 pb-5"></div>
 
-<h1>BOOK A RESERVATION</h1>
+<div class="container">
+    <div class="row justify-content-center my-5">
+        <div class="col-sm-10 col-md-6">
+            <h1 class="d-flex justify-content-center">Book a Reservation</h1>
+            <p class="d-flex justify-content-center">To book a reservation please select Time, Date and Number of people attending. Your Name and email address was already prefilled for you.</p>
+        </div>
+    </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-sm-10 col-md-6 d-flex justify-content-center">
 
-<form action="" method="POST">
-    {% csrf_token %}
-    <label for="first_name">First name: </label>
-    <input id="first_name" type="text" name="first_name" value="{{first_name}}" maxlength="100" readonly="readonly">
-    <label for="last_name">Last name: </label>
-    <input id="last_name" type="text" name="last_name" value="{{last_name}}" maxlength="100" readonly="readonly">
-    <label for="email">Email: </label>
-    <input id="email" type="text" name="email" value="{{email}}" maxlength="100" readonly="readonly">
-
-    <label for="time">Time: </label>
-    <input id="time" type="time" name="time" maxlength="100" required>
-    <label for="date">Date: </label>
-    <input id="date" type="date" name="date" maxlength="100" required>
-    <label for="number_of_people">Number of People: </label>
-    <input id="number_of_people" type="number" name="number_of_people" required>
-
-    <input type="submit" value="Submit Reservation">
-</form>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <ul>
+                    <li class="mb-3">
+                        <label for="first_name" class="form-label"><strong>First name:</strong></label>
+                        <input type="text" class="form-control" id="first_name" aria-describedby="first_name" name="first_name" value="{{first_name}}" maxlength="100" readonly="readonly">
+                    </li>
+                    <li class="mb-3">
+                        <label for="last_name" class="form-label"><strong>Last name:</strong></label>
+                        <input type="text" class="form-control" id="last_name" aria-describedby="last_name" name="last_name" value="{{last_name}}" maxlength="100" readonly="readonly">
+                    </li>
+                    <li class="mb-3">
+                        <label for="email" class="form-label"><strong>Email address:</strong></label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" value="{{email}}" maxlength="100" readonly="readonly">
+                    </li>
+                    <li class="mb-3">
+                        <label for="time" class="form-label"><strong>Reservation Time:</strong></label>
+                        <input type="time" class="form-control" id="time" aria-describedby="time" name="time" maxlength="100" required>
+                    </li>
+                    <li class="mb-3">
+                        <label for="date" class="form-label"><strong>Reservation Date:</strong></label>
+                        <input type="date" class="form-control" id="date" aria-describedby="date" name="date" maxlength="100" required>
+                    </li>
+                    <li class="mb-3">
+                        <label for="number_of_people" class="form-label"><strong>Number Of People:</strong></label>
+                        <input type="number" class="form-control" id="number_of_people" aria-describedby="number_of_people" name="number_of_people" required>
+                    </li>
+                    <li class="d-flex justify-content-center">
+                        <input class="btn btn-warning" type="submit" value="Submit Reservation">
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
 
 {%endblock%}
