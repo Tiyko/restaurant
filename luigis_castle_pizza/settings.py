@@ -15,7 +15,7 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 from django.contrib.messages import constants as messages
-
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -183,6 +183,12 @@ CLOUDINARY_STORAGE = {
       'API_KEY': config('API_KEY'),
       'API_SECRET': config('API_SECRET'),
 }
+
+cloudinary.config(
+  cloud_name=config('CLOUD_NAME'),
+  api_key=config('API_KEY'),
+  api_secret=config('API_KEY'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

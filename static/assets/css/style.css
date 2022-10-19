@@ -3,6 +3,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Exo', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 li,
@@ -21,8 +23,9 @@ a {
 
 .message {
     position: absolute;
-    top: 15%;
-    right: 20%;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* Home Settings */
