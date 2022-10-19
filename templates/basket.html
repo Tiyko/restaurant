@@ -2,27 +2,58 @@
 {% load static %}
 {% block content %}
 {% load crispy_forms_tags %}
+<div class="mt-5 pb-5"></div>
 
-<h1>Basket</h1>
-<p>{{message}}</p>
+<h1 class="d-flex justify-content-center align-items-center">Basket</h1>
+<p class="d-flex justify-content-center align-items-center">
+    This is your basket of items. You can add or remove items to your open order and when you are decided to buy, please click the button for payment.
+</p>
+
+<p class="d-flex justify-content-center align-items-center"><strong>{{message}}</strong></p>
+
 <form action="" method="post">
-{% csrf_token %}
-{% if orders_items is None %}
-<p>No orders, make a order in menu page.</p>
-{% else %}
-{% for orders_item in orders_items %}
+    {% csrf_token %}
+    {% if orders_items is None %}
+    <p class="d-flex justify-content-center align-items-center">No orders, make a order in menu page.</p>
+    {% else %}
+    <li class="d-flex justify-content-center">
+        <button class="btn btn-warning" id="add_more_items" value="add_more_items" name="add_more_items">Add more items</button>
+    </li>
+    <br>
 
-<li>Meal name: {{ orders_item.id_menu.meal_name }}</li>
-<li>Meal price: {{ orders_item.price }}</li>
-<li>Quantity: {{ orders_item.quantity }}</li>
-<input id="item_id" value="{{ orders_item.id }}" type="text" name="item_id" readonly="readonly">
-<button id="remove_item" value="{{ orders_item.id }}" name="remove_item">Remove</button>
-<hr>
-{% endfor %}
-<li>Total price: {{ total_price }}</li>
-    <input id="order_id" value="{{ order_id }}" type="text" name="order_id" readonly="readonly">
-    <button id="add_more_items" value="add_more_items" name="add_more_items" >Add more items</button>
-    <button id="pay" value="pay" name="pay">Pay</button>
+    {% for orders_item in orders_items %}
+    <ul class="d-flex justify-content-center">
+        <li class="me-5 d-flex align-items-center">
+            <strong>Meal name:</strong>
+            <span>&nbsp;{{ orders_item.id_menu.meal_name }}</span>
+        </li>
+        <li class="me-5 d-flex align-items-center">
+            <strong>Meal price:</strong>
+            <span>&nbsp;{{ orders_item.price }}</span>
+        </li>
+        <li class="me-5 d-flex align-items-center">
+            <strong>Quantity:</strong>
+            <span>&nbsp;{{ orders_item.quantity }}</span>
+        </li>
+        <li>
+            <button class="btn btn-warning" id="remove_item" value="{{ orders_item.id }}"name="remove_item">Remove</button>
+        </li>
+    </ul>
+    <input id="item_id" value="{{ orders_item.id }}" type="hidden" name="item_id" readonly="readonly">
+
+    <br>
+    {% endfor %}
+
+    <ul class="d-flex flex-column justify-content-center align-items-center">
+        <li class="mb-2">
+            <strong>Total price:</strong> <span>{{ total_price }} EUR</span>
+        </li>
+        <li>
+            <button class="btn btn-warning" id="pay" value="pay" name="pay">Pay for your order</button>
+        </li>
+    </ul>
+    <input id="order_id" value="{{ order_id }}" type="hidden" name="order_id" readonly="readonly">
+
 </form>
 
 {% endif %}
