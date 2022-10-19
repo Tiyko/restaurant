@@ -1,7 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load static %}
 
-<h1>HOME</h1>
+<h1 class=" d-flex col-md-8 offset-md-2 text-center position-absolute justify-content-center text-warning pt-5 mt-5 mb-5">
+    WELCOME TO LUIGI'S CASTLE, PIZZA RESTAURANT
+</h1>
 
+<div class="container home-container col-lg-4 d-none d-lg-block position-absolute top-50 start-50 bg-dark p-2 rounded ">
+    <p class="d-flex justify-content-center text-center text-warning mt-3">
+        <strong>Have A Taste Of Luigi's Masterful Family Recipe Pizza!</strong>
+    </p>
+    <ul class="d-flex justify-content-evenly">
+        <li>
+            <a class="btn btn-warning btn-sm" href="{% url 'menu' %}">Order Online</a>
+        </li>
+        <li>
+            <a class="btn btn-warning btn-sm" href="{% url 'book_reservation' %}">Book Reservation</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container home-container col-md-8 offset-md-2 col-sm-8 offset-sm-2 d-lg-none position-absolute top-50 bg-dark p-2 rounded">
+    <p class="d-flex justify-content-center text-center text-warning mt-3">
+        <strong>Have A Taste Of Luigi's Masterful Family Recipe Pizza!</strong>
+    </p>
+    <ul class="d-flex justify-content-evenly d-sm-flex">
+        <li>
+            <a class="btn btn-warning btn-sm" href="{% url 'menu' %}">Order Online</a>
+        </li>
+        <li>
+            <a class="btn btn-warning btn-sm" href="{% url 'book_reservation' %}">Book Reservation</a>
+        </li>
+    </ul>
+</div>
+
+<div class="bg-image"></div>
 {%endblock%}

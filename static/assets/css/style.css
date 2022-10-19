@@ -1,0 +1,60 @@
+/* Global Settings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li,
+a {
+    text-decoration: none;
+    list-style: none;
+}
+
+.bg-image {
+    background-image: url("../images/luigis_home.jpg");
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.message {
+    position: absolute;
+    top: 15%;
+    right: 20%;
+}
+
+/* Home Settings */
+.home-container {
+    --bs-bg-opacity: .7;
+}
+
+/* Menu Settings */
+.menu-image-container {
+    width: 25%;
+}
+
+/* About Page Settings */
+.gmap_canvas {
+    overflow: hidden;
+    background: none !important;
+    height: 300px;
+    width: 60vw;
+}
+
+/* Small Screens Settings */
+ @media (max-width: 768px) {
+    .menu{
+        flex-direction: column;
+    }
+    .menu-image-container {
+        width: 100%;
+    }
+    .bg-image {
+        background-image: url("../images/luigis_home_small.webp");
+    }
+    .gmap_canvas {
+        width: 90vw;
+    }
+}
