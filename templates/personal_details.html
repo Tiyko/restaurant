@@ -1,25 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="mt-5 pb-5"></div>
 
-<h1>PERSONAL DETAILS</h1>
-<h1>add your address to conclude your order</h1>
-<form action="" method="post">
-    {% csrf_token %}
+<div class="container">
+    <div class="row justify-content-center my-5">
+        <div class="col-sm-10 col-md-6">
+            <h1 class="d-flex justify-content-center">Personal Details</h1>
+            <p class="d-flex justify-content-center">Add or update your details to be able to make a order or reservation.</p>
 
-<li> {{last_name}}</li>
-<li> {{first_name}}</li>
-<li> {{email}}</li>
-<li> {{address}}</li>
-<li> {{zipcode}}</li>
-
-
-   first_name <input id="first_name" value="" name="first_name" type="text">
-  last_name <input id="last_name" value="" name="last_name" type="text">
-    <input id="email" value="" name="email" type="text">
-    <input id="address" value="" name="address" type="text" required>
-    <input id="zipcode" value="" name="zipcode" type="text" required>
-    <button id="save_personal_details" value="save_personal_details" name="save_personal_details">Save Details</button>
-</form>
-
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center my-5">
+        <div class="col-sm-10 col-md-6 d-flex justify-content-center">
+            <form action="" method="post">
+                {% csrf_token %}
+                <li class="mb-3">
+                    <label for="first_name" class="form-label"><strong>First Name:</strong> {{first_name}}</label>
+                    <input type="text" class="form-control" id="first_name" aria-describedby="first_name" name="first_name" value="" maxlength="100" required>
+                </li>
+                <li class="mb-3">
+                    <label for="last_name" class="form-label"><strong>Last Name: </strong>{{last_name}}</label>
+                    <input type="text" class="form-control" id="last_name" aria-describedby="last_name" name="last_name" value="" maxlength="100" required>
+                </li>
+                <li class="mb-3">
+                    <label for="email" class="form-label"><strong>Email:</strong> {{email}}</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" value="" maxlength="100" required>
+                </li>
+                <li class="mb-3">
+                    <label for="address" class="form-label"><strong>Address:</strong> {{address}}</label>
+                    <input type="text" class="form-control" id="address" aria-describedby="address" name="address" value="" maxlength="100" required>
+                </li>
+                <li class="mb-3">
+                    <label for="zipcode" class="form-label"><strong>Zipcode:</strong> {{zipcode}}</label>
+                    <input type="text" class="form-control" id="zipcode" aria-describedby="zipcode" name="zipcode" value="" maxlength="100" required>
+                </li>
+                <li class="d-flex justify-content-center">
+                    <button class="btn btn-warning" id="save_personal_details" value="save_personal_details" name="save_personal_details">Save Details</button>
+                </li>
+            </form>
+        </div>
+    </div>
+</div>
 {%endblock%}
