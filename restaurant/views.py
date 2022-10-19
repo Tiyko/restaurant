@@ -171,7 +171,8 @@ class ViewOrderAndReservation(View):
         context = {
             'orders_items': items_from_user,
             'reservations_items': reservations_from_user,
-            'message': order_message
+            'message': order_message,
+            'orders': order_instance
         }
 
         return render(request, "order_and_reservation.html", context)
