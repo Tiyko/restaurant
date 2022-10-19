@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="mt-5 pb-5"></div>
 
-<h1>ABOUT</h1>
+<div class="container text-center">
+    <h1>Contact Us</h1>
+    <p>You can find the restaurant at our address in Smithfield.</p>
+    <p>For any queries you can contact us via telephone number at 555 555 555.</p>
+</div>
+
+
+<div class="container d-flex justify-content-center">
+    <iframe class="gmap_canvas"
+            id="gmap_canvas" 
+            src="https://maps.google.com/maps?q=dublin%20smithfield&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+            frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+    </iframe>
+</div>
 
 {%endblock%}
