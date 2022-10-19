@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 
@@ -10,4 +12,4 @@ urlpatterns = [
     path('order_and_reservation/', views.ViewOrderAndReservation.as_view(), name='order_and_reservation'),
     path('book_reservation/', views.ReservationView.as_view(), name='book_reservation'),
     path('personal_details/', views.PersonalDetailsView.as_view(), name='personal_details'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
