@@ -6,62 +6,169 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="Description" content="Pizza restaurant with online delivery.">
+    <meta name="keywords" content="Pizza, Restaurant, Online delivery">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
-    </script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/b6e1357d11.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <title>Luigi's Castle Pizza</title>
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}">
+
+    <title>Luigi's Castle, Pizza Restaurant</title>
 </head>
+
 <body>
-    <nav>
-        <ul>
 
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'order_and_reservation' %}">Your Account</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'basket' %}">Basket</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                    /
-                    <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
-                </li>
-                {% endif %}
+    <!-- Navigation area -->
+    <header>
+        <nav class="navbar navbar-dark bg-dark fixed-top" aria-label="Dark offcanvas navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand text-warning" href="{% url 'index' %}">Luigi's Castle</a>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'menu' %}">Menu</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
-            </li>
+                <!-- Large screen navigation -->
+                <div class="d-none d-lg-block">
+                    <ul class="d-inline-flex mb-0">
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-outline-primary p-2 text-white" aria-current="page" href="{% url 'index' %}">Home</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-outline-primary p-2 text-white" href="{% url 'menu' %}">Menu</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-outline-primary p-2 text-white" href="{% url 'book_reservation' %}">Book a Reservation</a>
+                        </li>
+                        <li class="nav-item me-5">
+                            <a class="nav-link btn btn-outline-primary p-2 text-white" href="{% url 'about_us' %}">About Us</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-outline-primary p-2 text-white" href="{% url 'basket' %}">
+                                <i class="fa-solid fa-basket-shopping"></i> Basket</a>
+                        </li>
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle btn btn-info p-2 text-black" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Your account</a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'order_and_reservation' %}">Orders and Reservations</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'account_email' %}">Change Email</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'account_change_password' %}">Change Password</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'personal_details' %}">Personal Details</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-warning p-2 text-black" href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item me-3">
+                            <a class="nav-link btn btn-warning p-2 text-black" href="{% url 'account_signup' %}">Signup</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-success p-2 text-white" href="{% url 'account_login' %}">Login</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- Small screen navigation -->
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" aria-label="Navigation Button"
+                    data-bs-target="#offcanvasNavbarDark"
+                    aria-controls="offcanvasNavbarDark">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbarDark"
+                    aria-labelledby="offcanvasNavbarDarkLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">Luigi's Castle, Pizza Restaurant</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'menu' %}">Menu</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'book_reservation' %}">Book a Reservation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
+                            </li>
+                            {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Your account</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'order_and_reservation' %}">Orders and
+                                            Reservations</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    <li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'account_email' %}">Change Email</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'account_change_password' %}">Change Password</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'personal_details' %}">Personal Details</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'basket' %}">Basket</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                            </li>
+                            {% else %}
+                                <hr class="divider">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-        </ul>
-    </nav>
-
-    <ul>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'book_reservation' %}">Book a Reservation</a>
-        </li>
-    </ul>
-
-
-    <div class="container">
+    <!-- Login/Logout message -->
+    <div class="container message">
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 {% for message in messages %}
@@ -74,20 +181,41 @@
         </div>
     </div>
 
-    <main class="flex-shrink-0 main-bg">
-
+    <main>
         {% block content %}
         <!-- Content Goes here -->
         {% endblock content %}
     </main>
 
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+            <p class="col-md-4 mb-0 text-muted">© 2022 Luigi's Castle, Pizza Restaurant</p>
+            <a href="/" aria-label="Home Link" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                <svg class="fa me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+            </a>
+            <ul class="nav col-md-4 justify-content-end">
+                <li class="nav-item">
+                    <a href="https://www.facebook.com/" class="nav-link px-2 text-muted" target="”_blank”"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://www.instagram.com/" class="nav-link px-2 text-muted" target="”_blank”"><i class="fa-brands fa-square-instagram"></i> Instagram</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://twitter.com/" class="nav-link px-2 text-muted" target="”_blank”"><i class="fa-brands fa-twitter"></i> Twitter</a>
+                </li>
+            </ul>
+        </footer>
+    </div>
 
+    <!-- Login/Logout message timeout -->
     <script>
         setTimeout(function () {
             let messages = document.getElementById('msg');
             let alert = new bootstrap.Alert(messages);
             alert.close();
-        }, 2500);
+        }, 2000);
     </script>
 </body>
 </html>
