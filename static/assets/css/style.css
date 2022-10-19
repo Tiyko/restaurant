@@ -12,7 +12,7 @@ a {
 }
 
 .bg-image {
-    background-image: url("../images/luigis_home.jpg");
+    background-image: url("https://res.cloudinary.com/derkha2hg/image/upload/v1666151592/static/assets/images/luigis_home.jpg");
     height: 100vh;
     background-position: center;
     background-repeat: no-repeat;
@@ -52,7 +52,7 @@ a {
         width: 100%;
     }
     .bg-image {
-        background-image: url("../images/luigis_home_small.webp");
+        background-image: url("https://res.cloudinary.com/derkha2hg/image/upload/v1666151592/static/assets/images/luigis_home_small.webp");
     }
     .gmap_canvas {
         width: 90vw;
