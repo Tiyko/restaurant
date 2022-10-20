@@ -18,6 +18,7 @@ a {
 }
 
 .bg-image {
+    background-color: black;
     background-image: url("https://res.cloudinary.com/derkha2hg/image/upload/v1666151592/static/assets/images/luigis_home.jpg");
     height: 100vh;
     background-position: center;
