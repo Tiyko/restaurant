@@ -22,16 +22,16 @@
     <br>
 
     {% for orders_item in orders_items %}
-    <ul class="d-flex justify-content-center">
-        <li class="me-5 d-flex align-items-center">
+    <ul class="d-flex justify-content-center basket">
+        <li class="me-5 mt-2 mb-2 d-flex align-items-center">
             <strong>Meal name:</strong>
             <span>&nbsp;{{ orders_item.id_menu.meal_name }}</span>
         </li>
-        <li class="me-5 d-flex align-items-center">
+        <li class="me-5 mt-2 mb-2 d-flex align-items-center">
             <strong>Meal price:</strong>
             <span>&nbsp;{{ orders_item.price }}</span>
         </li>
-        <li class="me-5 d-flex align-items-center">
+        <li class="me-5 mt-2 mb-2 d-flex align-items-center">
             <strong>Quantity:</strong>
             <span>&nbsp;{{ orders_item.quantity }}</span>
         </li>
