@@ -163,16 +163,17 @@ class ViewOrderAndReservation(View):
         reservations_from_user = self.reservation_model.objects.filter(username=request.user.id)
         items_from_user = None
         customer_instance = Customer.objects.filter(user=request.user.id).first()
+        order_instance = None
         if customer_instance is not None:
             order_instance = Orders.objects.filter(customer=customer_instance)
             if order_instance is not None:
                 items_from_user = self.items_order.objects.filter(order__in=order_instance)
 
         context = {
-            'orders_items': items_from_user,
-            'reservations_items': reservations_from_user,
+            'orders_items': '' if items_from_user is None else items_from_user,
+            'reservations_items': '' if reservations_from_user is None else reservations_from_user,
             'message': order_message,
-            'orders': order_instance
+            'orders': '' if order_instance is None else order_instance
         }
 
         return render(request, "order_and_reservation.html", context)
