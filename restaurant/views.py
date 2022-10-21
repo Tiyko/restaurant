@@ -6,16 +6,28 @@ from .forms import ReservationForm
 
 
 def restaurant(request):
+    """
+    returns index page
+    """
     return render(request, 'index.html')
 
 
 def about_us(request):
+    """
+    returns about page
+    """
     return render(request, 'about_us.html')
 
 
 class PersonalDetailsView(View):
+    """
+    Gets the user and address instance and posts it to the page
+    """
 
     def get(self, request):
+        """
+        gets user and address instance
+        """
         user_instance = User.objects.get(id=request.user.id)
         if user_instance is not None:
             address_instance = Address.objects.filter(username=user_instance).first()
@@ -30,6 +42,9 @@ class PersonalDetailsView(View):
         return render(request, "personal_details.html", context)
 
     def post(self, request):
+        """
+        saves user and address instance
+        """
         user_instance = User.objects.get(id=request.user.id)
         if user_instance is not None:
             address_instance = Address(
@@ -47,14 +62,23 @@ class PersonalDetailsView(View):
 
 
 class ViewMenu(View):
+    """
+    Gets order_from_basket and saves items_instance
+    """
     model = Menu
     item_model = Items
 
     def get_user(self, request):
+        """
+        instantiates and returns user_instance
+        """
         user_instance = ReservationView().get_user(request)
         return user_instance
 
     def get_address(self, user_instance_id):
+        """
+        instantiates and returns address_instance
+        """
         try:
             address_instance = Address.objects.filter(username_id=user_instance_id).first()
             return address_instance
@@ -62,26 +86,35 @@ class ViewMenu(View):
             print('Caught this error: ' + repr(error))
 
     def get_customer(self, user_instance_id):
+        """
+        instantiates and returns customer_instance
+        """
         try:
             customer_instance = Customer.objects.filter(user_id=user_instance_id).first()
             return customer_instance
 
-        except Exception as error:    
+        except Exception as error:
             print('Caught this error: ' + repr(error))
 
     def create_customer(self, user_instance, address_instance):
+        """
+        gets customer_instance and instantiates to it address_instance
+        """
         customer_instance = Customer(
             user=user_instance,
             address=address_instance
-        )
+            )
         return customer_instance
 
     def create_update_order(self, customer_instance, items_total, order_instance):
+        """
+        updates order
+        """
         if order_instance is None:
             order_instance = Orders(
                 total_price=self.calculate_total_price(0, items_total),
                 customer=customer_instance
-                ) 
+                )
             order_instance.save()
             return order_instance
         order_instance_update = order_instance
@@ -90,14 +123,24 @@ class ViewMenu(View):
         return order_instance_update
 
     def calculate_total_price(self, old_order_price, items_total):
+        """
+        calculates total price
+        """
         totalprice = old_order_price + items_total
-        return totalprice 
+        return totalprice
 
     def get_order(self, order_id, customer_instance, items_total):
+        """
+        updates order
+        """
         order_instance = Orders.objects.filter(id=order_id).first()
         return self.create_update_order(customer_instance, items_total, order_instance)
 
     def post(self, request):
+        """
+        saves items_instance
+        returns to basket if an order was made, else returns to Login if no user is authenticated
+        """
         user_instance = self.get_user(request)
         if user_instance is not None:
             address_instance = self.get_address(user_instance.id)
@@ -115,9 +158,9 @@ class ViewMenu(View):
             menu_instance = Menu.objects.get(id=menu_id)
             items_total = Items().get_total(int(quantity), menu_instance.price)
             order_id = request.POST.get('order_from_basket')
-            order_instance = self.get_order(order_id, customer_instance, items_total)     
+            order_instance = self.get_order(order_id, customer_instance, items_total)
 
-            items_instance = Items( 
+            items_instance = Items(
                 price=menu_instance.price,
                 id_menu=menu_instance,
                 order=order_instance,
@@ -131,8 +174,11 @@ class ViewMenu(View):
             return render(request, "account/login.html")
 
     def get(self, request):
+        """
+        gets order_from_basket from the session
+        """
         order_from_basket = 0
-        if request.session.get('order_from_basket', False):    
+        if request.session.get('order_from_basket', False):
             order_from_basket = request.session['order_from_basket']
         context = {
             'menu_items': self.model.objects.all(),
@@ -143,11 +189,16 @@ class ViewMenu(View):
 
 
 class ViewOrderAndReservation(View):
+    """
+    gets the context and delets order or reservation
+    """
     items_order = Items
     reservation_model = Reservation
 
     def post(self, request):
-
+        """
+        delets order or reservation
+        """
         if request.POST.get('delete_order') is not None:
             order_instance = Orders.objects.get(id=request.POST.get('delete_order'))
             order_instance.delete()
@@ -157,6 +208,10 @@ class ViewOrderAndReservation(View):
         return redirect('/order_and_reservation', request)
 
     def get(self, request):
+        """
+        gets order_message and reservations_from_user, instantiates customer_instance
+        and order_instance and ads them to the context
+        """
         order_message = request.GET.get('message')
         if order_message is None:
             order_message = ''
@@ -180,15 +235,23 @@ class ViewOrderAndReservation(View):
 
 
 class ReservationView(View):
-
+    """
+    instantiates user_instance saves reservation
+    """
     def get_user(self, request):
-        if request.user.is_authenticated:  
+        """
+        instantiates User
+        """
+        if request.user.is_authenticated:
             user_instance = User.objects.get(id=request.user.id)
             return user_instance
         else:
             return None
 
     def save_reservation(self, request):
+        """
+        saves reservation
+        """
         try:
             object_reservation_form = ReservationForm(data=request.POST)
             form_info = object_reservation_form.data.dict()
@@ -206,6 +269,9 @@ class ReservationView(View):
             print('Caught this error: ' + repr(error))
 
     def get(self, request):
+        """
+        instantiates User
+        """
         user_instance = self.get_user(request)
         if user_instance is not None:
             context = {
@@ -218,6 +284,9 @@ class ReservationView(View):
             return render(request, "account/login.html")
 
     def post(self, request):
+        """
+        posts save reservation
+        """
         try:
             self.save_reservation(request)
             message = 'Thank you for your reservation'
@@ -227,12 +296,21 @@ class ReservationView(View):
 
 
 class BasketView(View):
+    """
+    gets the context, posts order, posts message, adds more items
+    and deletes items from the basket
+    """
     def calculate_remained_total_price(self,total_order_price, total_items_price):
+        """
+        calculates total price after an item was removed from basket
+        """
         remained_total = total_order_price - total_items_price
         return remained_total
 
     def post(self, request):
-    
+        """
+        posts order, adds more items, removes items and saves
+        """
         if request.POST.get('pay') == 'pay':
             order_instance = Orders.objects.get(id=request.POST.get('order_id'))
             order_instance.paid = True
@@ -249,8 +327,8 @@ class BasketView(View):
             item_id = request.POST.get('remove_item')
             item_instance = Items.objects.get(id=item_id)
 
-            order_instance = Orders.objects.get(id=request.POST.get('order_id'))   
-            total_items_price  = Items().get_total(item_instance.quantity, item_instance.price)
+            order_instance = Orders.objects.get(id=request.POST.get('order_id'))
+            total_items_price = Items().get_total(item_instance.quantity, item_instance.price)
             order_instance.total_price = self.calculate_remained_total_price(order_instance.total_price, total_items_price)
 
             order_instance.save()
@@ -258,6 +336,9 @@ class BasketView(View):
             return redirect('/basket', request)
 
     def get(self, request):
+        """
+        gets the context
+        """
         order_instance = None
         order_message = request.GET.get('message')
         if order_message is None:
